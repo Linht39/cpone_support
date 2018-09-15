@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanqiao.repository.IAdvRepository">
+
+    <!--查询所有广告-->
+    <select id="getAllAdv" resultMap="adv_category_map">
+        select a.*,b.category_name,b.category_alias,b.category_keyword,b.category_description from advertisement a,adv_category b WHERE a.category_id=b.category_id ORDER BY a.adv_time DESC
+    </select>
+    <resultMap id="adv_category_map" type="com.lanqiao.bean.AdvAndCategory">
+        <association property="advertisement" javaType="com.lanqiao.bean.Advertisement">
+            <id property="advId" column="adv_id"/>
+            <result property="advName" column="adv_name"/>
+            <result property="advText" column="adv_Text"/>
+            <result property="advViews" column="adv_views"/>
+            <result property="advTime" column="adv_Time"/>
+            <result property="advKeyword" column="adv_keyword"/>
+            <result property="advDescription" column="adv_description"/>
+        </association>
+        <association property="advCategory" javaType="com.lanqiao.bean.AdvCategory">
+            <id property="categoryId" column="category_id"/>
+            <result property="categoryName" column="category_name"/>
+            <result property="categoryAlias" column="category_alias"/>
+            <result property="categoryKeyword" column="category_keyword"/>
+            <result property="categoryDescription" column="category_description"/>
+        </association>
+    </resultMap>
+
+    <!--分页查询广告-->
+    <select id="getAllAdvByPage" resultMap="adv_category_map">
+        select a.*,b.category_name,b.category_alias,b.category_keyword,b.category_description from advertisement a,adv_category b WHERE a.category_id=b.category_id ORDER BY a.adv_time DESC LIMIT 0,8
+    </select>
+
+    <select id="getAdvById" resultMap="adv_category_map">
+        select a.*,b.category_name,b.category_alias,b.category_keyword,b.category_description from advertisement a,adv_category b WHERE a.category_id=b.category_id AND adv_id =#{advId}
+    </select>
+
+    <select id="getAdvByCategoryId" resultMap="adv_category_map">
+        select a.*,b.category_name,b.category_alias,b.category_keyword,b.category_description from advertisement a,adv_category b WHERE a.category_id=b.category_id AND a.category_id =#{categoryId}
+    </select>
+
+    <delete id="delAdvById">
+        delete from advertisement where adv_id =#{advId}
+    </delete>
+
+    <insert id="insertAdv" parameterType="Advertisement">
+        insert into advertisement(adv_name,adv_text,adv_time,adv_keyword,adv_description,category_id) values (#{advName},#{advText},sysdate(),#{advKeyword},#{advDescription},#{categoryId})
+    </insert>
+
+    <!--广告置顶-->
+    <update id="updateAdv" parameterType="Advertisement">
+        update advertisement set adv_time=sysdate() where adv_id =#{advId}
+    </update>
+</mapper>

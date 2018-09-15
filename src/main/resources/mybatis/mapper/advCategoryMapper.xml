@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lanqiao.repository.IAdvCategoryRepository">
+
+    <!--查询所有分类-->
+    <select id="getAllCategory" resultType="advCategory">
+        select b.*,COUNT(a.adv_id) category_num FROM advertisement a RIGHT JOIN adv_category b ON a.category_id=b.category_id GROUP BY b.category_id
+    </select>
+
+    <delete id="delCategoryById">
+        delete from adv_category where category_id =#{categoryId}
+    </delete>
+
+    <insert id="insertCategory" parameterType="Advertisement">
+        insert into adv_category(category_name,category_alias,category_keyword,category_description) values (#{categoryName},#{categoryAlias},#{categoryKeyword},#{categoryDescription})
+    </insert>
+
+</mapper>
